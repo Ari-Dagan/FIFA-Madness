@@ -66,6 +66,27 @@ body.theme-dark .nav-card {
   &.leaderboard-card { border-color: rgba(255,215,0,0.2) !important; &:hover { border-color: $gold !important; } .card-arrow { color: $gold; } }
 }
 
+.lock-section {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  background: rgba(200,16,46,0.06); border: 1px solid rgba(200,16,46,0.2);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 40px;
+
+  .lock-info {
+    display: flex; align-items: flex-start; gap: 12px; flex: 1;
+    mat-icon { color: $accent; margin-top: 1px; flex-shrink: 0; }
+    strong { display: block; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text); font-weight: 700; margin-bottom: 2px; }
+    span { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text-3); }
+  }
+
+  .lock-btn {
+    color: $accent !important; border-color: rgba(200,16,46,0.4) !important;
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.875rem;
+    display: flex; align-items: center; gap: 6px;
+    &:hover { background: rgba(200,16,46,0.08) !important; }
+    mat-icon { font-size: 1rem; width: 1rem; height: 1rem; }
+  }
+}
+
 .members-section {
   .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: var(--text-2); margin: 0 0 16px; }
   .members-list { display: flex; flex-wrap: wrap; gap: 10px; }

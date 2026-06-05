@@ -63,6 +63,23 @@
       }
     </div>
 
+    @if (isAdmin() && !pool()!.is_locked) {
+      <div class="lock-section">
+        <div class="lock-info">
+          <mat-icon>lock</mat-icon>
+          <div>
+            <strong>Lock picks before the tournament starts.</strong>
+            <span>Once locked, no one can change their picks or tiebreaker guess.</span>
+          </div>
+        </div>
+        <button mat-stroked-button class="lock-btn" (click)="lockPool()" [disabled]="locking()">
+          @if (locking()) { <mat-spinner diameter="16"></mat-spinner> }
+          @else { <mat-icon>lock</mat-icon> }
+          Lock Pool
+        </button>
+      </div>
+    }
+
     <div class="members-section">
       <h2 class="section-title">Pool Members ({{ members().length }})</h2>
       <div class="members-list">
