@@ -1,0 +1,148 @@
+$accent: #c8102e;
+$gold: #ffd700;
+$green: #00843d;
+$live: #ff4757;
+
+.scores-page { padding: 32px 40px; max-width: 1100px; min-height: 100vh; }
+.loading-center { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+
+.page-header {
+  margin-bottom: 24px;
+  .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 3px; color: var(--text); margin: 0 0 6px; }
+  .sub-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .sub { font-family: 'Inter', sans-serif; color: var(--text-2); font-size: 0.9rem; margin: 0; }
+}
+
+.live-count-badge {
+  display: flex; align-items: center; gap: 7px;
+  font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px;
+  color: $live; background: rgba(255,71,87,0.15); border: 1px solid rgba(255,71,87,0.35);
+  padding: 4px 12px; border-radius: 20px;
+}
+
+.pulse-dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: $live; flex-shrink: 0;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.filter-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px;
+
+  .chip {
+    font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600;
+    padding: 6px 16px; border-radius: 20px; cursor: pointer;
+    background: var(--chip-bg); color: var(--chip-text);
+    border: 1px solid transparent;
+    transition: background-color 0.15s, color 0.15s;
+
+    &:hover { background: var(--surface-hover); color: var(--text); }
+    &.active { background: rgba(200,16,46,0.15); color: var(--text); border-color: rgba(200,16,46,0.4); }
+  }
+}
+
+.groups-container { display: flex; flex-direction: column; gap: 40px; }
+
+.group-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--text-3);
+  margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.match-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+
+  &:hover { transform: translateY(-2px); border-color: var(--border-2); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  &.has-result { border-left: 3px solid rgba(255,215,0,0.5); }
+  &.no-result { opacity: 0.75; }
+
+  &.is-live {
+    border-left: 3px solid rgba(255,71,87,0.7);
+    background: rgba(255,71,87,0.04);
+    animation: live-border-pulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes live-border-pulse {
+  0%, 100% { border-left-color: rgba(255,71,87,0.7); }
+  50% { border-left-color: rgba(255,71,87,0.2); }
+}
+
+.card-top {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+  .match-num { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--text-3); }
+}
+
+.live-badge {
+  margin-left: auto; display: flex; align-items: center; gap: 6px;
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;
+  color: $live; background: rgba(255,71,87,0.18); border: 1px solid rgba(255,71,87,0.4);
+  padding: 3px 9px; border-radius: 4px;
+}
+
+.outcome-badge {
+  margin-left: auto; font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 800;
+  letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px;
+  &.outcome-home { background: rgba(0,132,61,0.15); color: #2e7d32; }
+  &.outcome-away { background: rgba(200,16,46,0.15); color: #c62828; }
+  &.outcome-draw { background: rgba(160,125,0,0.15); color: #a07800; }
+}
+
+body.theme-dark {
+  .outcome-badge {
+    &.outcome-home { background: rgba(0,132,61,0.25); color: #81c784; }
+    &.outcome-away { background: rgba(200,16,46,0.25); color: #ef9a9a; }
+    &.outcome-draw { background: rgba(255,215,0,0.15); color: $gold; }
+  }
+}
+
+.upcoming-badge {
+  margin-left: auto; font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px;
+  background: var(--chip-bg); color: var(--text-3);
+}
+
+.teams-row {
+  display: flex; align-items: center; gap: 8px;
+
+  .team {
+    display: flex; align-items: center; gap: 5px; flex: 1;
+    &.away { flex-direction: row-reverse; }
+    .team-flag { height: 14px; width: auto; border-radius: 2px; flex-shrink: 0; display: block; }
+    .team-name { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    &.winner .team-name { color: var(--text); font-weight: 700; }
+  }
+}
+
+.score-display {
+  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+  .score { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--score); line-height: 1; }
+  .score-sep { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--text-3); }
+  &.live-score .score { color: $live; }
+}
+
+.tbd-display {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  .kickoff-date { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--text-2); }
+  .kickoff-time { font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: var(--text-4); white-space: nowrap; }
+}
+
+.card-bottom {
+  display: flex; align-items: center; gap: 4px; margin-top: 10px;
+  font-family: 'Inter', sans-serif; font-size: 0.72rem; color: var(--text-3);
+  .match-date-bottom { font-weight: 700; color: var(--text-2); }
+  .sep { color: var(--text-4); }
+  mat-icon { font-size: 0.85rem; width: 0.85rem; height: 0.85rem; }
+}

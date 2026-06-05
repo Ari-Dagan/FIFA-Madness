@@ -1,0 +1,94 @@
+<div class="landing">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="trophy-icon">🏆</div>
+      <h1 class="hero-title">FIFA 2026<br>WORLD CUP POOL</h1>
+      <p class="hero-sub">Pick wins, draws, and losses for all 48 group-stage matches.<br>Compete with friends on the leaderboard. Watch on Fox Sports.</p>
+
+      @if (!currentUser()) {
+        <div class="hero-actions">
+          <a mat-raised-button class="btn-primary" routerLink="/auth/login">Sign In</a>
+          <a mat-stroked-button class="btn-secondary" routerLink="/auth/register">Create Account</a>
+        </div>
+      } @else {
+        <div class="hero-actions">
+          <a mat-raised-button class="btn-primary" routerLink="/pool/create">+ Create Pool</a>
+          <a mat-stroked-button class="btn-secondary" routerLink="/pool/join">Join a Pool</a>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="content-section">
+    @if (currentUser() && userPools().length > 0) {
+      <section class="my-pools">
+        <h2 class="section-title">Your Pools</h2>
+        <div class="pools-grid">
+          @for (pool of userPools(); track pool.id) {
+            <mat-card class="pool-card" (click)="goToPool(pool.id)">
+              <mat-card-header>
+                <mat-card-title>{{ pool.name }}</mat-card-title>
+                <mat-card-subtitle>
+                  Code: <strong>{{ pool.join_code }}</strong>
+                </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                @if (pool.is_locked) {
+                  <mat-chip class="chip-locked">🔒 Locked</mat-chip>
+                } @else {
+                  <mat-chip class="chip-open">✏️ Picks Open</mat-chip>
+                }
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button class="btn-go">Go to Pool →</button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      </section>
+    }
+
+    <section class="how-it-works">
+      <h2 class="section-title">How It Works</h2>
+      <div class="steps-grid">
+        <mat-card class="step-card">
+          <div class="step-icon">🎯</div>
+          <h3>Pick Every Match</h3>
+          <p>Choose Home Win, Draw, or Away Win for all 48 group stage matches before the pool locks.</p>
+        </mat-card>
+        <mat-card class="step-card">
+          <div class="step-icon">📺</div>
+          <h3>Watch on Fox Sports</h3>
+          <p>Every game airs on FOX, FS1, or Tubi. The pool admin enters results as they happen.</p>
+        </mat-card>
+        <mat-card class="step-card">
+          <div class="step-icon">🏆</div>
+          <h3>Climb the Leaderboard</h3>
+          <p>1 point per correct pick. See live standings, max attainable points, and elimination status.</p>
+        </mat-card>
+      </div>
+    </section>
+
+    <section class="tournament-info">
+      <div class="info-banner">
+        <div class="info-item">
+          <mat-icon>sports_soccer</mat-icon>
+          <span><strong>48</strong> Group Stage Matches</span>
+        </div>
+        <div class="info-item">
+          <mat-icon>public</mat-icon>
+          <span><strong>48</strong> Nations Competing</span>
+        </div>
+        <div class="info-item">
+          <mat-icon>calendar_today</mat-icon>
+          <span><strong>Jun 11 – Jul 19</strong>, 2026</span>
+        </div>
+        <div class="info-item">
+          <mat-icon>tv</mat-icon>
+          <span>FOX · FS1 · Tubi</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

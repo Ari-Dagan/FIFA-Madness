@@ -1,0 +1,57 @@
+<nav class="sidebar">
+  <div class="logo-area">
+    <span class="logo-icon">⚽</span>
+    <span class="logo-text">WC 2026 POOL</span>
+  </div>
+
+  <mat-nav-list class="nav-list">
+    <a mat-list-item [routerLink]="['/']" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+      <mat-icon matListItemIcon>public</mat-icon>
+      <span matListItemTitle>Home</span>
+    </a>
+
+    @if (poolId()) {
+      <a mat-list-item [routerLink]="['/pool', poolId(), 'picks']" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>sports_soccer</mat-icon>
+        <span matListItemTitle>My Picks</span>
+      </a>
+
+      <a mat-list-item [routerLink]="['/pool', poolId(), 'leaderboard']" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>leaderboard</mat-icon>
+        <span matListItemTitle>Leaderboard</span>
+      </a>
+
+      <a mat-list-item [routerLink]="['/pool', poolId(), 'scores']" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>scoreboard</mat-icon>
+        <span matListItemTitle>Scores</span>
+      </a>
+
+      @if (isAdmin()) {
+        <a mat-list-item [routerLink]="['/admin/results', poolId()]" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
+          <span matListItemTitle>Admin Results</span>
+        </a>
+      }
+    }
+  </mat-nav-list>
+
+  <div class="spacer"></div>
+
+  <div class="user-section">
+    <div class="user-info">
+      <mat-icon class="user-icon">account_circle</mat-icon>
+      <span class="user-name">{{ userDisplayName() || 'Guest' }}</span>
+    </div>
+    <button mat-stroked-button class="sign-out-btn" (click)="signOut.emit()">
+      <mat-icon>logout</mat-icon> Sign Out
+    </button>
+  </div>
+
+  <div class="theme-toggle-area">
+    <button mat-icon-button class="theme-toggle-btn" (click)="themeToggle.emit()"
+      [matTooltip]="isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'" matTooltipPosition="right">
+      <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+    <span class="theme-label">{{ isDark() ? 'Light Mode' : 'Dark Mode' }}</span>
+  </div>
+</nav>

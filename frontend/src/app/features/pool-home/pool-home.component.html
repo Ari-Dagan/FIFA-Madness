@@ -1,0 +1,81 @@
+<div class="pool-home">
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else if (pool()) {
+    <div class="pool-header">
+      <div class="pool-title-row">
+        <h1 class="pool-name">{{ pool()!.name }}</h1>
+        @if (pool()!.is_locked) {
+          <span class="status-badge locked">🔒 Locked</span>
+        } @else {
+          <span class="status-badge open">✏️ Picks Open</span>
+        }
+      </div>
+      <div class="pool-meta">
+        <span class="join-code-label">Join Code:</span>
+        <span class="join-code">{{ pool()!.join_code }}</span>
+        <button mat-icon-button class="copy-btn" (click)="copyCode()" matTooltip="Copy join code">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <span class="member-count">{{ members().length }} member{{ members().length !== 1 ? 's' : '' }}</span>
+      </div>
+    </div>
+
+    <div class="nav-cards">
+      <mat-card class="nav-card picks-card" (click)="navigate('picks')">
+        <div class="card-icon">⚽</div>
+        <div class="card-content">
+          <h3>My Picks</h3>
+          <p>Pick W/D/L for all 48 group-stage matches</p>
+        </div>
+        <mat-icon class="card-arrow">arrow_forward</mat-icon>
+      </mat-card>
+
+      <mat-card class="nav-card leaderboard-card" (click)="navigate('leaderboard')">
+        <div class="card-icon">🏆</div>
+        <div class="card-content">
+          <h3>Leaderboard</h3>
+          <p>Live standings with max attainable points</p>
+        </div>
+        <mat-icon class="card-arrow">arrow_forward</mat-icon>
+      </mat-card>
+
+      <mat-card class="nav-card scores-card" (click)="navigate('scores')">
+        <div class="card-icon">📊</div>
+        <div class="card-content">
+          <h3>Scores</h3>
+          <p>Match results and scores as they come in</p>
+        </div>
+        <mat-icon class="card-arrow">arrow_forward</mat-icon>
+      </mat-card>
+
+      @if (isAdmin()) {
+        <mat-card class="nav-card admin-card" [routerLink]="['/admin/results', poolId]">
+          <div class="card-icon">🛡️</div>
+          <div class="card-content">
+            <h3>Enter Results</h3>
+            <p>Admin: submit final scores to grade picks</p>
+          </div>
+          <mat-icon class="card-arrow">arrow_forward</mat-icon>
+        </mat-card>
+      }
+    </div>
+
+    <div class="members-section">
+      <h2 class="section-title">Pool Members ({{ members().length }})</h2>
+      <div class="members-list">
+        @for (member of members(); track member.id) {
+          <div class="member-pill">
+            <mat-icon>person</mat-icon>
+            {{ member.profiles?.display_name || 'Unknown' }}
+            @if (member.user_id === pool()!.admin_id) {
+              <span class="admin-badge">Admin</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

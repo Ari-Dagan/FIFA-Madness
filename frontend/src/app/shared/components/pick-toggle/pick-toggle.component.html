@@ -1,0 +1,39 @@
+<div class="pick-toggle" [class.disabled]="disabled()" [class.graded]="isGraded()">
+  <button
+    type="button"
+    class="segment"
+    [ngClass]="'segment--home state-' + buttonState('home')"
+    (click)="select('home')"
+    [disabled]="disabled()"
+  >
+    @if (homeFlagUrl()) { <img class="flag-img" [src]="homeFlagUrl()" [alt]="homeTeam()" /> }
+    <span class="team-name">{{ homeDisplayName() }}</span>
+    @if (buttonState('home') === 'correct') { <span class="result-icon">✓</span> }
+    @else if (buttonState('home') === 'wrong') { <span class="result-icon">✗</span> }
+  </button>
+
+  <button
+    type="button"
+    class="segment"
+    [ngClass]="'segment--draw state-' + buttonState('draw')"
+    (click)="select('draw')"
+    [disabled]="disabled()"
+  >
+    <span class="team-name">Draw</span>
+    @if (buttonState('draw') === 'correct') { <span class="result-icon">✓</span> }
+    @else if (buttonState('draw') === 'wrong') { <span class="result-icon">✗</span> }
+  </button>
+
+  <button
+    type="button"
+    class="segment"
+    [ngClass]="'segment--away state-' + buttonState('away')"
+    (click)="select('away')"
+    [disabled]="disabled()"
+  >
+    @if (awayFlagUrl()) { <img class="flag-img" [src]="awayFlagUrl()" [alt]="awayTeam()" /> }
+    <span class="team-name">{{ awayDisplayName() }}</span>
+    @if (buttonState('away') === 'correct') { <span class="result-icon">✓</span> }
+    @else if (buttonState('away') === 'wrong') { <span class="result-icon">✗</span> }
+  </button>
+</div>

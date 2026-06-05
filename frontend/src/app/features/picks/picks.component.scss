@@ -1,0 +1,109 @@
+$accent: #c8102e;
+$gold: #ffd700;
+$green: #00843d;
+
+.picks-page { padding: 32px 40px 120px; max-width: 960px; min-height: 100vh; }
+.loading-center { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; gap: 24px; flex-wrap: wrap;
+
+  .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 3px; color: var(--text); margin: 0 0 4px; }
+  .pool-label { font-family: 'Inter', sans-serif; color: var(--text-2); font-size: 0.9rem; margin: 0; }
+
+  .lock-badge { background: rgba(255,215,0,0.12); color: #a07800; border: 1px solid rgba(160,120,0,0.3); border-radius: 20px; padding: 8px 16px; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600; }
+
+  .pick-progress-area { text-align: right; }
+  .progress-label { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--text-2); display: block; margin-bottom: 8px; }
+  .progress-bar { width: 200px; height: 6px !important; border-radius: 3px; ::ng-deep .mdc-linear-progress__buffer { background: var(--track) !important; } ::ng-deep .mdc-linear-progress__bar-inner { border-color: $accent !important; } }
+}
+
+body.theme-dark .lock-badge { color: $gold; border-color: rgba(255,215,0,0.3); }
+
+.tiebreaker-section {
+  display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 32px;
+
+  &.locked { opacity: 0.6; }
+
+  .tb-label { flex: 1; min-width: 0; }
+  .tb-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1.5px; color: var(--text); display: block; margin-bottom: 4px; }
+  .tb-desc { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text-3); line-height: 1.4; }
+
+  .tb-input {
+    width: 130px; padding: 8px 12px; text-align: center;
+    background: var(--surface); border: 1.5px solid var(--border-2);
+    border-radius: 6px; color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+    outline: none; transition: border-color 0.15s; flex-shrink: 0;
+    &:focus { border-color: $accent; }
+    &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { opacity: 0.5; }
+  }
+}
+
+.groups-container { display: flex; flex-direction: column; gap: 32px; }
+
+.group-header {
+  margin-bottom: 12px;
+  .group-badge { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: var(--text-3); background: var(--chip-bg); border: 1px solid var(--border); border-radius: 4px; padding: 4px 12px; }
+}
+
+.matches-list { display: flex; flex-direction: column; gap: 2px; }
+
+.match-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1.6fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: background-color 0.15s;
+
+  &:hover { background: var(--surface-hover); }
+  &.has-result { border-left: 3px solid rgba(255,215,0,0.4); }
+}
+
+.match-meta {
+  display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  .match-num { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--text-3); }
+  .match-date { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text); font-weight: 700; }
+  .match-time { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-2); }
+  .match-city { font-family: 'Inter', sans-serif; font-size: 0.7rem; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+.match-teams {
+  display: flex; align-items: center; gap: 8px;
+  .team-name { display: flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--text); font-weight: 500; flex: 1; &.away { justify-content: flex-end; } .flag-img { height: 15px; width: auto; border-radius: 2px; flex-shrink: 0; display: block; } .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } }
+  .vs-divider { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-3); font-weight: 700; flex-shrink: 0; }
+}
+
+.match-pick { min-width: 0; }
+
+.result-score {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; color: var(--score);
+  white-space: nowrap; padding-left: 4px;
+}
+
+.save-fab {
+  position: fixed; bottom: 32px; right: 40px; z-index: 100;
+
+  .save-btn {
+    background-color: $accent !important; color: #fff !important;
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem;
+    box-shadow: 0 4px 20px rgba(200,16,46,0.5) !important;
+    gap: 8px; padding: 0 28px !important; height: 56px !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(200,16,46,0.6) !important; }
+    &:disabled { background-color: rgba(200,16,46,0.4) !important; }
+  }
+}
+
+::ng-deep .snack-success .mdc-snackbar__surface { background: #00843d !important; color: #fff !important; }
+
+@media (max-width: 700px) {
+  .picks-page { padding: 16px 12px 120px; }
+  .match-row { grid-template-columns: 1fr; gap: 8px; }
+  .match-teams { .team-name.away { justify-content: flex-start; } }
+}

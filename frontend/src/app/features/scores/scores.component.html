@@ -1,0 +1,93 @@
+<div class="scores-page">
+  @if (loading()) {
+    <div class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <div class="page-header">
+      <h1 class="page-title">SCORES</h1>
+      <div class="sub-row">
+        <p class="sub">{{ completedCount() }} of {{ matchesWithResults().length }} matches finished</p>
+        @if (liveCount() > 0) {
+          <span class="live-count-badge">
+            <span class="pulse-dot"></span>
+            {{ liveCount() }} LIVE NOW
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="filter-chips">
+      @for (group of groups(); track group) {
+        <button class="chip" [class.active]="selectedGroup() === group" (click)="selectedGroup.set(group)">
+          {{ group === 'ALL' ? 'All Groups' : 'Group ' + group }}
+        </button>
+      }
+    </div>
+
+    <div class="groups-container">
+      @for (group of groupedFiltered(); track group.letter) {
+        <div class="group-section">
+          <h2 class="group-title">GROUP {{ group.letter }}</h2>
+          <div class="matches-grid">
+            @for (match of group.matches; track match.id) {
+              <div class="match-card"
+                [class.has-result]="!!match.result && match.result.status === 'finished'"
+                [class.is-live]="match.result?.status === 'live'"
+                [class.no-result]="!match.result">
+                <div class="card-top">
+                  <span class="match-num">#{{ match.match_number }}</span>
+                  <app-network-badge [network]="match.network"></app-network-badge>
+                  @if (match.result?.status === 'live') {
+                    <span class="live-badge">
+                      <span class="pulse-dot"></span>LIVE
+                    </span>
+                  } @else if (match.result?.outcome) {
+                    <span class="outcome-badge" [class]="'outcome-' + match.result!.outcome">
+                      {{ outcomeLabel(match.result!.outcome) }}
+                    </span>
+                  } @else {
+                    <span class="upcoming-badge">UPCOMING</span>
+                  }
+                </div>
+
+                <div class="teams-row">
+                  <div class="team" [class.winner]="match.result?.outcome === 'home' && match.result?.status === 'finished'">
+                    <img class="team-flag" [src]="getFlagUrl(match.home_team)" [alt]="match.home_team" />
+                    <span class="team-name">{{ teamDisplayName(match.home_team) }}</span>
+                  </div>
+
+                  @if (match.result) {
+                    <div class="score-display" [class.live-score]="match.result.status === 'live'">
+                      <span class="score">{{ match.result.home_score }}</span>
+                      <span class="score-sep">–</span>
+                      <span class="score">{{ match.result.away_score }}</span>
+                    </div>
+                  } @else {
+                    <div class="tbd-display">
+                      <span class="kickoff-date">{{ formatMatchDate(match.kickoff_utc) }}</span>
+                      <span class="kickoff-time">{{ match.kickoff_et === 'TBD' ? 'Time TBD' : match.kickoff_et }}</span>
+                    </div>
+                  }
+
+                  <div class="team away" [class.winner]="match.result?.outcome === 'away' && match.result?.status === 'finished'">
+                    <span class="team-name">{{ teamDisplayName(match.away_team) }}</span>
+                    <img class="team-flag" [src]="getFlagUrl(match.away_team)" [alt]="match.away_team" />
+                  </div>
+                </div>
+
+                <div class="card-bottom">
+                  @if (match.result) {
+                    <span class="match-date-bottom">{{ formatMatchDate(match.kickoff_utc) }}</span>
+                    @if (match.city) { <span class="sep">·</span> }
+                  }
+                  @if (match.city) {
+                    <mat-icon>place</mat-icon> {{ match.city }}
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

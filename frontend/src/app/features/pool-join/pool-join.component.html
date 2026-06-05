@@ -1,0 +1,34 @@
+<div class="page">
+  <div class="page-card">
+    <div class="page-header">
+      <span class="header-icon">🔑</span>
+      <h1>Join a Pool</h1>
+      <p>Enter the 6-character code your pool admin shared</p>
+    </div>
+
+    @if (error()) {
+      <div class="error-banner"><mat-icon>error_outline</mat-icon> {{ error() }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Join Code</mat-label>
+        <input matInput formControlName="joinCode" placeholder="e.g. AB3X7Z" maxlength="6"
+               style="text-transform: uppercase; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;">
+        <mat-icon matPrefix>vpn_key</mat-icon>
+        @if (form.controls.joinCode.hasError('pattern')) {
+          <mat-error>Letters and numbers only</mat-error>
+        }
+        @if (form.controls.joinCode.hasError('minlength') || form.controls.joinCode.hasError('maxlength')) {
+          <mat-error>Must be exactly 6 characters</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button class="submit-btn" type="submit" [disabled]="loading() || form.invalid">
+        @if (loading()) { <mat-spinner diameter="20"></mat-spinner> } @else { Join Pool }
+      </button>
+    </form>
+
+    <p class="back-link"><a routerLink="/">← Back to Home</a></p>
+  </div>
+</div>

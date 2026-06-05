@@ -1,0 +1,175 @@
+@use '@angular/material' as mat;
+
+// ─── Material themes ───
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$red-palette,
+    tertiary: mat.$yellow-palette,
+  ),
+  typography: (
+    brand-family: 'Inter',
+    plain-family: 'Inter',
+  ),
+));
+
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$red-palette,
+    tertiary: mat.$yellow-palette,
+  ),
+  typography: (
+    brand-family: 'Inter',
+    plain-family: 'Inter',
+  ),
+));
+
+:root {
+  @include mat.all-component-themes($dark-theme);
+}
+
+body.theme-light {
+  @include mat.all-component-themes($light-theme);
+}
+
+// ─── Global reset ───
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ─── Dark theme CSS variables ───
+body.theme-dark {
+  background-color: #1A1A2E;
+  color: #ffffff;
+
+  --bg: #1A1A2E;
+  --bg2: #16213E;
+  --surface: rgba(255,255,255,0.03);
+  --surface-hover: rgba(255,255,255,0.07);
+  --surface-2: #0F3460;
+  --surface-3: #0a1628;
+  --border: rgba(255,255,255,0.08);
+  --border-2: rgba(255,255,255,0.15);
+  --text: #ffffff;
+  --text-2: rgba(255,255,255,0.6);
+  --text-3: rgba(255,255,255,0.35);
+  --text-4: rgba(255,255,255,0.45);
+  --nav-bg: #1a1a2e;
+  --nav-shadow: 4px 0 16px rgba(0,0,0,0.4);
+  --nav-border: rgba(255,255,255,0.1);
+  --nav-text: rgba(255,255,255,0.75);
+  --nav-icon: rgba(255,255,255,0.55);
+  --score: #FFD700;
+  --track: rgba(255,255,255,0.1);
+  --auth-bg: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  --auth-card-bg: rgba(15,52,96,0.9);
+  --auth-card-border: rgba(255,255,255,0.1);
+  --auth-card-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-text: rgba(255,255,255,0.6);
+  --theme-btn-color: #FFD700;
+  --theme-btn-bg: rgba(255,215,0,0.1);
+  --theme-btn-border: rgba(255,215,0,0.3);
+  --theme-label: rgba(255,255,255,0.45);
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+}
+
+// ─── Light theme CSS variables ───
+body.theme-light {
+  background-color: #f0f2f5;
+  color: #1A1A2E;
+
+  --bg: #f0f2f5;
+  --bg2: #e4e8f0;
+  --surface: rgba(0,0,0,0.025);
+  --surface-hover: rgba(0,0,0,0.05);
+  --surface-2: #ffffff;
+  --surface-3: #e4e8f0;
+  --border: rgba(0,0,0,0.09);
+  --border-2: rgba(0,0,0,0.18);
+  --text: #1A1A2E;
+  --text-2: rgba(26,26,46,0.65);
+  --text-3: rgba(26,26,46,0.38);
+  --text-4: rgba(26,26,46,0.5);
+  --nav-bg: #ffffff;
+  --nav-shadow: 4px 0 16px rgba(0,0,0,0.1);
+  --nav-border: rgba(0,0,0,0.09);
+  --nav-text: rgba(26,26,46,0.75);
+  --nav-icon: rgba(26,26,46,0.5);
+  --score: #c8102e;
+  --track: rgba(0,0,0,0.1);
+  --auth-bg: linear-gradient(135deg, #dce3f0 0%, #f0f2f5 60%, #e8ecf5 100%);
+  --auth-card-bg: #ffffff;
+  --auth-card-border: rgba(0,0,0,0.1);
+  --auth-card-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  --chip-bg: rgba(0,0,0,0.06);
+  --chip-text: rgba(26,26,46,0.65);
+  --theme-btn-color: #c8102e;
+  --theme-btn-bg: rgba(200,16,46,0.08);
+  --theme-btn-border: rgba(200,16,46,0.25);
+  --theme-label: rgba(26,26,46,0.45);
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+
+  // ── Material overrides for light mode ──
+  .mat-mdc-select-panel { background: #ffffff !important; }
+  .mat-mdc-option {
+    color: #1a1a2e !important;
+    &.mdc-list-item--selected { background: rgba(200,16,46,0.08) !important; }
+    &:hover { background: rgba(0,0,0,0.05) !important; }
+  }
+  .mat-sort-header-arrow { color: rgba(26,26,46,0.4) !important; }
+
+  // Form fields in light mode
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper { background: rgba(0,0,0,0.04) !important; }
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing { border-color: rgba(0,0,0,0.25) !important; }
+    .mat-mdc-floating-label { color: rgba(26,26,46,0.55) !important; }
+    .mat-mdc-input-element,
+    .mat-mdc-select-value-text { color: #1a1a2e !important; }
+    .mat-mdc-select-value { color: #1a1a2e !important; }
+    .mat-icon { color: rgba(26,26,46,0.4) !important; }
+    .mat-mdc-select-arrow { color: rgba(26,26,46,0.4) !important; }
+  }
+}
+
+// ─── Snackbar styles ───
+.mat-mdc-snack-bar-container {
+  &.snack-success .mdc-snackbar__surface { background: #00843d !important; color: #fff !important; }
+  &.snack-error .mdc-snackbar__surface { background: #c8102e !important; color: #fff !important; }
+  &.snack-info .mdc-snackbar__surface { background: #0f3460 !important; color: #fff !important; }
+}
+
+// Dark-only Material overrides
+body.theme-dark {
+  .mat-mdc-select-panel { background: #16213e !important; }
+  .mat-mdc-option {
+    color: rgba(255,255,255,0.85) !important;
+    font-family: 'Inter', sans-serif !important;
+    &.mdc-list-item--selected { background: rgba(200,16,46,0.15) !important; .mdc-list-item__primary-text { color: #fff !important; } }
+    &:hover { background: rgba(255,255,255,0.08) !important; }
+  }
+  .mat-sort-header-arrow { color: rgba(255,255,255,0.4) !important; }
+}
+
+.mat-mdc-progress-spinner circle { stroke: #C8102E !important; }
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid #FFD700; outline-offset: 2px; }

@@ -1,0 +1,58 @@
+<div class="page">
+  <div class="page-card">
+    <div class="page-header">
+      <span class="header-icon">🏆</span>
+      <h1>Create a Pool</h1>
+      <p>Set up your pool and share the join code with friends</p>
+    </div>
+
+    @if (!createdPool()) {
+      @if (error()) {
+        <div class="error-banner"><mat-icon>error_outline</mat-icon> {{ error() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Pool Name</mat-label>
+          <input matInput formControlName="name" placeholder="e.g. Coakley & Friends 2026">
+          <mat-icon matPrefix>group</mat-icon>
+          @if (form.controls.name.hasError('minlength')) {
+            <mat-error>At least 3 characters</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tiebreaker</mat-label>
+          <mat-select formControlName="tiebreakerMode">
+            <mat-option value="none">No tiebreaker</mat-option>
+            <mat-option value="usa_goals">USA Group-Stage Goals</mat-option>
+            <mat-option value="total_goals">Total Tournament Goals</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>emoji_events</mat-icon>
+        </mat-form-field>
+
+        <button mat-raised-button class="submit-btn" type="submit" [disabled]="loading() || form.invalid">
+          @if (loading()) { <mat-spinner diameter="20"></mat-spinner> } @else { Create Pool }
+        </button>
+      </form>
+    } @else {
+      <div class="success-state">
+        <div class="success-icon">🎉</div>
+        <h2>Pool Created!</h2>
+        <p class="success-sub">Share this code with your friends</p>
+        <div class="join-code-box">
+          <span class="join-code">{{ createdPool()!.join_code }}</span>
+          <button mat-icon-button class="copy-btn" (click)="copyCode()" matTooltip="Copy code">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </div>
+        <p class="pool-name-display">{{ createdPool()!.name }}</p>
+        <button mat-raised-button class="go-btn" (click)="goToPool()">
+          Go to Your Pool <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    }
+
+    <p class="back-link"><a routerLink="/">← Back to Home</a></p>
+  </div>
+</div>

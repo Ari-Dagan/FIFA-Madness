@@ -1,0 +1,87 @@
+$accent: #c8102e;
+$green: #00843d;
+
+.pick-toggle {
+  display: flex;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid var(--border-2);
+  background: var(--surface);
+
+  &.disabled { opacity: 0.75; }
+}
+
+.segment {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+  min-width: 0;
+  outline: none;
+
+  & + .segment { border-left: 1px solid var(--border); }
+
+  &:not(:disabled):hover {
+    background-color: var(--surface-hover);
+    color: var(--text);
+  }
+
+  .flag-img { height: 13px; width: auto; border-radius: 1px; flex-shrink: 0; object-fit: cover; display: block; }
+  .team-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .result-icon { font-size: 0.85em; font-weight: 800; flex-shrink: 0; }
+}
+
+.segment.state-selected {
+  background-color: $accent;
+  color: #fff;
+  font-weight: 700;
+  &:not(:disabled):hover { background-color: #a30d25; }
+}
+
+.segment.state-correct {
+  background-color: $green;
+  color: #fff;
+  font-weight: 700;
+  .result-icon { color: #b9f6ca; }
+}
+
+.segment.state-wrong {
+  background-color: #8b0000;
+  color: rgba(255,255,255,0.85);
+  font-weight: 700;
+  .result-icon { color: #ffcdd2; }
+}
+
+.segment.state-graded-other {
+  background-color: rgba(0, 132, 61, 0.18);
+  color: #2e7d32;
+}
+
+body.theme-dark .segment.state-graded-other { color: #81c784; }
+
+.graded .segment.state-unselected {
+  background-color: var(--surface);
+  color: var(--text-3);
+}
+
+@media (max-width: 400px) {
+  .pick-toggle { flex-direction: column; }
+  .segment {
+    padding: 10px 12px;
+    justify-content: flex-start;
+    border-left: none !important;
+    border-top: 1px solid var(--border);
+    &:first-child { border-top: none; }
+  }
+}

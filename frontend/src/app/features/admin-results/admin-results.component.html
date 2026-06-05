@@ -1,0 +1,125 @@
+<div class="admin-page">
+  <div class="warning-banner">
+    <mat-icon>admin_panel_settings</mat-icon>
+    <div>
+      <strong>ADMIN MODE</strong> — Results you enter here will grade all pool members' picks and update the leaderboard instantly.
+    </div>
+  </div>
+
+  <div class="feed-banner">
+    <mat-icon>sensors</mat-icon>
+    <div>
+      <strong>LIVE FEED ACTIVE</strong> — Scores sync automatically from football-data.org every 2 minutes during match windows.
+      <span class="feed-note">Manual entries permanently override the feed for that match.</span>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">ENTER RESULTS</h1>
+    <p class="sub">Enter or override the final score for each match. Picks are graded automatically.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="rows()" class="results-table">
+
+        <ng-container matColumnDef="match">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="match-info">
+              <span class="match-num">#{{ row.match.match_number }}</span>
+              <app-network-badge [network]="row.match.network"></app-network-badge>
+            </div>
+            <span class="match-date">{{ formatMatchDate(row.match.kickoff_utc) }}</span>
+            <span class="match-time">{{ row.match.kickoff_et === 'TBD' ? 'Time TBD' : row.match.kickoff_et }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="teams">
+          <th mat-header-cell *matHeaderCellDef>Match</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="teams-cell">
+              <span class="team home">
+                <img class="flag-img" [src]="getFlagUrl(row.match.home_team)" [alt]="row.match.home_team" />
+                {{ teamDisplayName(row.match.home_team) }}
+              </span>
+              <span class="vs">vs</span>
+              <span class="team away">
+                <img class="flag-img" [src]="getFlagUrl(row.match.away_team)" [alt]="row.match.away_team" />
+                {{ teamDisplayName(row.match.away_team) }}
+              </span>
+            </div>
+            <span class="venue">{{ row.match.city }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="home_score">
+          <th mat-header-cell *matHeaderCellDef>Home</th>
+          <td mat-cell *matCellDef="let row">
+            <input type="number" class="score-input" [(ngModel)]="row.homeScore" min="0" max="20" placeholder="0">
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="away_score">
+          <th mat-header-cell *matHeaderCellDef>Away</th>
+          <td mat-cell *matCellDef="let row">
+            <input type="number" class="score-input" [(ngModel)]="row.awayScore" min="0" max="20" placeholder="0">
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="outcome">
+          <th mat-header-cell *matHeaderCellDef>Result</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="outcome-preview" [class.has-outcome]="row.homeScore !== null && row.awayScore !== null">
+              {{ computedOutcome(row) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="source">
+          <th mat-header-cell *matHeaderCellDef>Source</th>
+          <td mat-cell *matCellDef="let row">
+            @if (!row.existingResult) {
+              <span class="source-badge none">—</span>
+            } @else if (row.isAutoSynced) {
+              <span class="source-badge auto">
+                <mat-icon>sensors</mat-icon> AUTO
+              </span>
+            } @else {
+              <span class="source-badge manual">
+                <mat-icon>edit</mat-icon> MANUAL
+              </span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Save</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-raised-button class="save-row-btn"
+              [class.saved]="row.saved"
+              [class.existing]="!!row.existingResult && !row.saved"
+              [class.override]="row.isAutoSynced && !row.saved"
+              (click)="saveRow(row)"
+              [disabled]="row.saving || row.homeScore === null || row.awayScore === null">
+              @if (row.saving) { <mat-spinner diameter="16"></mat-spinner> }
+              @else if (row.saved) { ✓ Saved }
+              @else if (row.isAutoSynced) { Override }
+              @else if (row.existingResult) { Update }
+              @else { Save }
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            [class.has-result]="!!row.existingResult"
+            [class.is-auto]="row.isAutoSynced"
+            [class.just-saved]="row.saved">
+        </tr>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,122 @@
+<div class="picks-page">
+  @if (loading()) {
+    <div class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <div class="page-header">
+      <div class="header-left">
+        <h1 class="page-title">MY PICKS</h1>
+        <p class="pool-label">{{ pool()?.name }}</p>
+      </div>
+      <div class="header-right">
+        @if (pool()?.is_locked) {
+          <span class="lock-badge">🔒 Locked — Results will be highlighted</span>
+        } @else {
+          <div class="pick-progress-area">
+            <span class="progress-label">{{ pickCount() }} / {{ matches().length }} picks made</span>
+            <mat-progress-bar mode="determinate" [value]="pickProgress()" class="progress-bar"></mat-progress-bar>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (pool()?.tiebreaker_mode !== 'none') {
+      <div class="tiebreaker-section" [class.locked]="pool()?.is_locked">
+        <div class="tb-label">
+          <span class="tb-title">Tiebreaker</span>
+          <span class="tb-desc">
+            @if (pool()?.tiebreaker_mode === 'total_goals') {
+              Predict the total goals scored across all 48 group-stage matches.
+            } @else {
+              Predict total goals scored by the USA in the group stage.
+            }
+            Used only if players are tied on correct picks.
+          </span>
+        </div>
+        <input
+          type="number"
+          class="tb-input"
+          [ngModel]="tiebreakerValue()"
+          (ngModelChange)="tiebreakerValue.set($event !== '' && $event !== null ? +$event : null)"
+          min="0"
+          max="500"
+          placeholder="Your guess"
+          [disabled]="pool()?.is_locked ?? false"
+        />
+      </div>
+    }
+
+    <div class="groups-container">
+      @for (group of matchGroups(); track group.letter) {
+        <div class="group-section">
+          <div class="group-header">
+            <span class="group-badge">GROUP {{ group.letter }}</span>
+          </div>
+
+          <div class="matches-list">
+            @for (match of group.matches; track match.id) {
+              <div class="match-row" [class.has-result]="getResult(match.id)">
+                <div class="match-meta">
+                  <span class="match-num">#{{ match.match_number }}</span>
+                  <span class="match-date">{{ formatMatchDate(match.kickoff_utc) }}</span>
+                  <span class="match-time">{{ match.kickoff_et === 'TBD' ? 'Time TBD' : match.kickoff_et }}</span>
+                  <app-network-badge [network]="match.network"></app-network-badge>
+                  @if (match.city) {
+                    <span class="match-city">{{ match.city }}</span>
+                  }
+                </div>
+
+                <div class="match-teams">
+                  <div class="team-name home">
+                    @if (getFlagUrl(match.home_team)) {
+                      <img class="flag-img" [src]="getFlagUrl(match.home_team)" [alt]="match.home_team" />
+                    }
+                    <span class="name">{{ teamDisplayName(match.home_team) }}</span>
+                  </div>
+                  <div class="vs-divider">vs</div>
+                  <div class="team-name away">
+                    @if (getFlagUrl(match.away_team)) {
+                      <img class="flag-img" [src]="getFlagUrl(match.away_team)" [alt]="match.away_team" />
+                    }
+                    <span class="name">{{ teamDisplayName(match.away_team) }}</span>
+                  </div>
+                </div>
+
+                <div class="match-pick">
+                  <app-pick-toggle
+                    [homeTeam]="match.home_team"
+                    [awayTeam]="match.away_team"
+                    [homeFlag]="match.home_team_flag || ''"
+                    [awayFlag]="match.away_team_flag || ''"
+                    [value]="getPick(match.id)"
+                    [disabled]="pool()?.is_locked ?? false"
+                    [result]="getResult(match.id)?.outcome ?? null"
+                    (pickChange)="onPickChange(match.id, $event)"
+                  ></app-pick-toggle>
+                </div>
+
+                @if (getResult(match.id); as result) {
+                  <div class="result-score">
+                    {{ result.home_score }} – {{ result.away_score }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (!pool()?.is_locked) {
+      <div class="save-fab">
+        <button mat-fab extended class="save-btn" (click)="saveAll()" [disabled]="saving() || pickCount() === 0">
+          @if (saving()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <mat-icon>save</mat-icon>
+          }
+          Save My Picks ({{ pickCount() }})
+        </button>
+      </div>
+    }
+  }
+</div>

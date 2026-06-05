@@ -1,0 +1,184 @@
+<div class="leaderboard-page">
+  @if (loading()) {
+    <div class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
+  } @else {
+    <div class="page-header">
+      <div class="header-left">
+        <h1 class="page-title">🏆 LEADERBOARD</h1>
+        <p class="pool-label">{{ pool()?.name }}</p>
+      </div>
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        LIVE
+      </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-num">{{ entries().length }}</span>
+        <span class="stat-label">Players</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">{{ aliveCount() }}</span>
+        <span class="stat-label">Still Alive</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">{{ totalGamesRemaining() }}</span>
+        <span class="stat-label">Games Remaining</span>
+      </div>
+      @if (leader()) {
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">{{ leader()!.correct_picks }}</span>
+          <span class="stat-label">Leader's Points</span>
+        </div>
+      }
+    </div>
+
+    <!-- Tiebreaker info -->
+    @if (pool()?.tiebreaker_mode !== 'none') {
+      <div class="tiebreaker-banner">
+        <mat-icon>emoji_events</mat-icon>
+        <div class="tb-text">
+          <strong>Tiebreaker:&nbsp;</strong>
+          @if (pool()?.tiebreaker_mode === 'total_goals') {
+            Closest prediction of <em>total goals across all 48 group-stage matches</em> wins any tie.
+          } @else {
+            Closest prediction of <em>total USA goals in the group stage</em> wins any tie.
+          }
+          <span class="tb-note">Enter your guess on the My Picks page before the pool locks.</span>
+        </div>
+      </div>
+    }
+
+    <!-- My position card -->
+    @if (myEntry(); as me) {
+      <div class="my-position-card" [class.leading]="me.rank === 1" [class.alive]="me.still_alive" [class.eliminated]="!me.still_alive">
+        <div class="my-pos-left">
+          <span class="my-rank">{{ rankMedal(me.rank) }}</span>
+          <div class="my-info">
+            <span class="my-name">{{ me.display_name }}</span>
+            <span class="my-sub">{{ me.correct_picks }} correct · {{ me.pending_picks }} pending · max {{ me.max_possible_points }}</span>
+          </div>
+        </div>
+        <div class="my-pos-right">
+          @if (me.rank === 1) {
+            <span class="status-msg leading-msg">👑 You're in the lead!</span>
+          } @else if (me.still_alive) {
+            <span class="status-msg alive-msg">🔥 {{ me.points_behind_leader }} point{{ me.points_behind_leader !== 1 ? 's' : '' }} behind — still in it!</span>
+          } @else {
+            <span class="status-msg eliminated-msg">💀 Mathematically eliminated</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Main table -->
+    <div class="table-container">
+      <table mat-table [dataSource]="entries()" class="leaderboard-table">
+
+        <!-- Rank -->
+        <ng-container matColumnDef="rank">
+          <th mat-header-cell *matHeaderCellDef>Rank</th>
+          <td mat-cell *matCellDef="let e" class="rank-cell">
+            <span class="rank-display" [class.top-three]="e.rank <= 3">
+              {{ rankMedal(e.rank) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Player</th>
+          <td mat-cell *matCellDef="let e" class="name-cell" [class.current-user]="e.user_id === currentUser()?.id">
+            <span class="player-name">{{ e.display_name }}</span>
+            @if (e.user_id === currentUser()?.id) {
+              <span class="you-badge">YOU</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Correct -->
+        <ng-container matColumnDef="correct">
+          <th mat-header-cell *matHeaderCellDef>✓ Correct</th>
+          <td mat-cell *matCellDef="let e" class="correct-cell">
+            <span class="correct-num">{{ e.correct_picks }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Total picks -->
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Picks Made</th>
+          <td mat-cell *matCellDef="let e" class="total-cell">{{ e.total_picks }} / 48</td>
+        </ng-container>
+
+        <!-- Max possible -->
+        <ng-container matColumnDef="max_possible">
+          <th mat-header-cell *matHeaderCellDef matTooltip="Max points attainable if all pending picks are correct" matTooltipShowDelay="300">
+            Max Possible ⓘ
+          </th>
+          <td mat-cell *matCellDef="let e" class="max-cell">
+            <div class="max-possible-cell">
+              <span class="max-num">{{ e.max_possible_points }}</span>
+              <mat-progress-bar mode="determinate" [value]="maxPossibleBarValue(e)" class="max-bar"></mat-progress-bar>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Behind leader -->
+        <ng-container matColumnDef="behind">
+          <th mat-header-cell *matHeaderCellDef>Behind</th>
+          <td mat-cell *matCellDef="let e" class="behind-cell">
+            @if (e.points_behind_leader === 0) {
+              <span class="behind-zero">—</span>
+            } @else {
+              <span class="behind-num">-{{ e.points_behind_leader }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Still alive -->
+        <ng-container matColumnDef="alive">
+          <th mat-header-cell *matHeaderCellDef matTooltip="Can still mathematically win" matTooltipShowDelay="300">
+            In It? ⓘ
+          </th>
+          <td mat-cell *matCellDef="let e" class="alive-cell">
+            @if (e.still_alive) {
+              <span class="alive-yes">✓</span>
+            } @else {
+              <span class="alive-no">✗</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Tiebreaker -->
+        <ng-container matColumnDef="tiebreaker">
+          <th mat-header-cell *matHeaderCellDef>Tiebreaker</th>
+          <td mat-cell *matCellDef="let e" class="tb-cell">
+            {{ e.tiebreaker_value ?? '—' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            [class.top-1]="row.rank === 1"
+            [class.top-2]="row.rank === 2"
+            [class.top-3]="row.rank === 3"
+            [class.my-row]="row.user_id === currentUser()?.id"
+            [class.eliminated-row]="!row.still_alive">
+        </tr>
+      </table>
+    </div>
+
+    @if (entries().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3>No entries yet</h3>
+        <p>Be the first to submit picks in this pool!</p>
+      </div>
+    }
+  }
+</div>
