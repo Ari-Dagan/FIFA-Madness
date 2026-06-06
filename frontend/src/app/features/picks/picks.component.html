@@ -2,13 +2,26 @@
   @if (loading()) {
     <div class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
   } @else {
+
+    @if (isViewingOther) {
+      <div class="viewing-banner">
+        <button mat-icon-button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="viewing-info">
+          <span class="viewing-label">Viewing bracket</span>
+          <span class="viewing-name">{{ viewedName }}</span>
+        </div>
+      </div>
+    }
+
     <div class="page-header">
       <div class="header-left">
-        <h1 class="page-title">MY PICKS</h1>
+        <h1 class="page-title">{{ isViewingOther ? viewedName + "'S PICKS" : 'MY PICKS' }}</h1>
         <p class="pool-label">{{ pool()?.name }}</p>
       </div>
       <div class="header-right">
-        @if (pool()?.is_locked) {
+        @if (effectiveLocked()) {
           <span class="lock-badge">🔒 Locked — Results will be highlighted</span>
         } @else {
           <div class="pick-progress-area">
@@ -19,8 +32,8 @@
       </div>
     </div>
 
-    @if (pool()?.tiebreaker_mode !== 'none') {
-      <div class="tiebreaker-section" [class.locked]="pool()?.is_locked">
+    @if (!isViewingOther && pool()?.tiebreaker_mode !== 'none') {
+      <div class="tiebreaker-section" [class.locked]="effectiveLocked()">
         <div class="tb-label">
           <span class="tb-title">Tiebreaker</span>
           <span class="tb-desc">
@@ -40,7 +53,7 @@
           min="0"
           max="500"
           placeholder="Your guess"
-          [disabled]="pool()?.is_locked ?? false"
+          [disabled]="effectiveLocked()"
         />
       </div>
     }
@@ -88,7 +101,7 @@
                     [homeFlag]="match.home_team_flag || ''"
                     [awayFlag]="match.away_team_flag || ''"
                     [value]="getPick(match.id)"
-                    [disabled]="pool()?.is_locked ?? false"
+                    [disabled]="effectiveLocked() || isViewingOther"
                     [result]="getResult(match.id)?.outcome ?? null"
                     (pickChange)="onPickChange(match.id, $event)"
                   ></app-pick-toggle>
@@ -106,7 +119,7 @@
       }
     </div>
 
-    @if (!pool()?.is_locked) {
+    @if (!effectiveLocked() && !isViewingOther) {
       <div class="save-fab">
         <button mat-fab extended class="save-btn" (click)="saveAll()" [disabled]="saving() || pickCount() === 0">
           @if (saving()) {

@@ -5,6 +5,16 @@ $green: #00843d;
 .picks-page { padding: 32px 40px 120px; max-width: 960px; min-height: 100vh; }
 .loading-center { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
 
+.viewing-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  border-radius: 10px; padding: 10px 16px; margin-bottom: 20px;
+
+  .back-btn { color: var(--text-2) !important; flex-shrink: 0; }
+  .viewing-label { display: block; font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-3); }
+  .viewing-name { display: block; font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--text); }
+}
+
 .page-header {
   display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; gap: 24px; flex-wrap: wrap;
 

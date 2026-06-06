@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { isTournamentStarted, formatLockTime } from '../../core/utils/tournament';
 import { AuthService } from '../../core/services/auth.service';
 import { PoolService } from '../../core/services/pool.service';
 import { Pool, PoolMember } from '../../core/models/index';
@@ -34,6 +35,8 @@ export class PoolHomeComponent implements OnInit {
   readonly isAdmin = signal(false);
   readonly loading = signal(true);
   readonly locking = signal(false);
+  readonly lockTimeLabel = formatLockTime();
+  readonly isTournamentStarted = isTournamentStarted;
 
   readonly poolId = this.route.snapshot.paramMap.get('poolId')!;
   readonly currentUser = this.auth.currentUser;
@@ -52,6 +55,13 @@ export class PoolHomeComponent implements OnInit {
       this.isAdmin.set(poolData.admin_id === user.id);
     }
     this.loading.set(false);
+
+    if (poolData && !poolData.is_locked && isTournamentStarted()) {
+      try {
+        await this.poolService.lockPool(this.poolId);
+        this.pool.update(p => p ? { ...p, is_locked: true } : p);
+      } catch { /* silent */ }
+    }
   }
 
   copyCode(): void {

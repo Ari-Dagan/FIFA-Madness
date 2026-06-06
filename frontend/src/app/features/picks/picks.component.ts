@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +21,7 @@ import { Match, Outcome, Pick, Pool, Result } from '../../core/models/index';
 import { PickToggleComponent } from '../../shared/components/pick-toggle/pick-toggle.component';
 import { NetworkBadgeComponent } from '../../shared/components/network-badge/network-badge.component';
 import { getFlagUrl, teamDisplayName } from '../../core/utils/country-flags';
+import { isTournamentStarted } from '../../core/utils/tournament';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
 interface MatchGroup {
@@ -37,6 +38,7 @@ interface MatchGroup {
 })
 export class PicksComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly poolService = inject(PoolService);
   private readonly matchService = inject(MatchService);
@@ -47,6 +49,10 @@ export class PicksComponent implements OnInit, OnDestroy {
   private channel: RealtimeChannel | null = null;
 
   readonly poolId = this.route.snapshot.paramMap.get('poolId')!;
+  readonly viewUserId = this.route.snapshot.queryParamMap.get('view');
+  readonly viewedName = this.route.snapshot.queryParamMap.get('name') ?? '';
+  readonly isViewingOther = !!this.viewUserId;
+
   readonly currentUser = this.auth.currentUser;
 
   readonly loading = signal(true);
@@ -56,6 +62,10 @@ export class PicksComponent implements OnInit, OnDestroy {
   readonly results = signal<Map<string, Result>>(new Map());
   readonly pickMap = signal<Map<string, Outcome>>(new Map());
   readonly tiebreakerValue = signal<number | null>(null);
+
+  readonly effectiveLocked = computed(() =>
+    (this.pool()?.is_locked ?? false) || isTournamentStarted()
+  );
 
   readonly matchGroups = computed((): MatchGroup[] => {
     const groups = new Map<string, Match[]>();
@@ -76,12 +86,14 @@ export class PicksComponent implements OnInit, OnDestroy {
     const user = this.currentUser();
     if (!user) return;
 
+    const targetUserId = this.viewUserId ?? user.id;
+
     const [poolData, matchData, picksData, resultsData, tiebreakerVal] = await Promise.all([
       this.poolService.getPool(this.poolId),
       this.matchService.getMatches(),
-      this.picksService.getPicks(this.poolId, user.id),
+      this.picksService.getPicks(this.poolId, targetUserId),
       this.resultsService.getResults(),
-      this.poolService.getTiebreakerValue(this.poolId, user.id),
+      this.isViewingOther ? Promise.resolve(null) : this.poolService.getTiebreakerValue(this.poolId, user.id),
     ]);
 
     this.pool.set(poolData);
@@ -112,7 +124,12 @@ export class PicksComponent implements OnInit, OnDestroy {
     if (this.channel) this.supabase.client.removeChannel(this.channel);
   }
 
+  goBack(): void {
+    this.router.navigate(['/pool', this.poolId, 'leaderboard']);
+  }
+
   onPickChange(matchId: string, outcome: Outcome): void {
+    if (this.isViewingOther || this.effectiveLocked()) return;
     const newMap = new Map(this.pickMap());
     newMap.set(matchId, outcome);
     this.pickMap.set(newMap);
@@ -138,7 +155,7 @@ export class PicksComponent implements OnInit, OnDestroy {
 
   async saveAll(): Promise<void> {
     const user = this.currentUser();
-    if (!user || this.pool()?.is_locked) return;
+    if (!user || this.effectiveLocked() || this.isViewingOther) return;
 
     this.saving.set(true);
     try {

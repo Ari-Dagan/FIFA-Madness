@@ -168,7 +168,9 @@
             [class.top-2]="row.rank === 2"
             [class.top-3]="row.rank === 3"
             [class.my-row]="row.user_id === currentUser()?.id"
-            [class.eliminated-row]="!row.still_alive">
+            [class.eliminated-row]="!row.still_alive"
+            (click)="viewBracket(row)"
+            style="cursor: pointer;">
         </tr>
       </table>
     </div>

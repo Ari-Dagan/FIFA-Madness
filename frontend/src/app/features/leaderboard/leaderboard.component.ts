@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -27,6 +27,7 @@ const TOTAL_MATCHES = 48;
 })
 export class LeaderboardComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly poolService = inject(PoolService);
   private readonly leaderboardService = inject(LeaderboardService);
@@ -88,5 +89,16 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.channel?.unsubscribe();
+  }
+
+  viewBracket(entry: LeaderboardEntry): void {
+    const isMe = entry.user_id === this.currentUser()?.id;
+    if (isMe) {
+      this.router.navigate(['/pool', this.poolId, 'picks']);
+    } else {
+      this.router.navigate(['/pool', this.poolId, 'picks'], {
+        queryParams: { view: entry.user_id, name: entry.display_name }
+      });
+    }
   }
 }
