@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { isTournamentStarted, formatLockTime } from '../../core/utils/tournament';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,7 +18,7 @@ import { Pool, PoolMember } from '../../core/models/index';
 @Component({
   selector: 'app-pool-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule, MatChipsModule, MatProgressSpinnerModule, MatSnackBarModule, MatDialogModule],
+  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule, MatChipsModule, MatProgressSpinnerModule, MatSnackBarModule, MatDialogModule, MatTooltipModule],
   templateUrl: './pool-home.component.html',
   styleUrl: './pool-home.component.scss',
 })

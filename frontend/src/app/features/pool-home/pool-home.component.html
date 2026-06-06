@@ -60,25 +60,23 @@
           </div>
           <mat-icon class="card-arrow">arrow_forward</mat-icon>
         </mat-card>
+
+        @if (!pool()!.is_locked) {
+          <mat-card class="nav-card lock-card" (click)="lockPool()">
+            <div class="card-icon">🔒</div>
+            <div class="card-content">
+              <h3>Lock Picks</h3>
+              <p>Auto-locks {{ lockTimeLabel }} · Lock early here</p>
+            </div>
+            @if (locking()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <mat-icon class="card-arrow">lock</mat-icon>
+            }
+          </mat-card>
+        }
       }
     </div>
-
-    @if (isAdmin() && !pool()!.is_locked) {
-      <div class="lock-section">
-        <div class="lock-info">
-          <mat-icon>lock_clock</mat-icon>
-          <div>
-            <strong>Picks auto-lock at {{ lockTimeLabel }}</strong>
-            <span>Lock early to freeze picks now, or let it happen automatically at the first kickoff.</span>
-          </div>
-        </div>
-        <button mat-stroked-button class="lock-btn" (click)="lockPool()" [disabled]="locking()">
-          @if (locking()) { <mat-spinner diameter="16"></mat-spinner> }
-          @else { <mat-icon>lock</mat-icon> }
-          Lock Now
-        </button>
-      </div>
-    }
 
     <div class="members-section">
       <h2 class="section-title">Pool Members ({{ members().length }})</h2>
