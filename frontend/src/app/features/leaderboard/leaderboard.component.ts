@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isTournamentStarted } from '../../core/utils/tournament';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -16,7 +17,7 @@ import { LeaderboardService } from '../../core/services/leaderboard.service';
 import { ResultsService } from '../../core/services/results.service';
 import { LeaderboardEntry, Pool } from '../../core/models/index';
 
-const TOTAL_MATCHES = 48;
+const TOTAL_MATCHES = 72;
 
 @Component({
   selector: 'app-leaderboard',
@@ -55,6 +56,10 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
 
   readonly aliveCount = computed(() => this.entries().filter(e => e.still_alive).length);
 
+  readonly effectiveLocked = computed(() =>
+    (this.pool()?.is_locked ?? false) || isTournamentStarted()
+  );
+
   readonly totalGamesRemaining = computed(() => TOTAL_MATCHES - this.finishedMatchCount());
 
   rankMedal(rank: number): string {
@@ -65,7 +70,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   }
 
   maxPossibleBarValue(entry: LeaderboardEntry): number {
-    const totalGames = 48;
+    const totalGames = 72;
     return Math.round((entry.max_possible_points / totalGames) * 100);
   }
 
@@ -95,7 +100,7 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     const isMe = entry.user_id === this.currentUser()?.id;
     if (isMe) {
       this.router.navigate(['/pool', this.poolId, 'picks']);
-    } else {
+    } else if (this.effectiveLocked()) {
       this.router.navigate(['/pool', this.poolId, 'picks'], {
         queryParams: { view: entry.user_id, name: entry.display_name }
       });

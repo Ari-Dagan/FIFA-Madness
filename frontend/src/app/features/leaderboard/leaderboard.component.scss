@@ -116,8 +116,9 @@ body.theme-dark {
       border-bottom: 1px solid var(--border) !important;
       transition: background-color 0.15s;
 
-      &:hover { background: var(--surface-hover) !important; cursor: pointer; }
-      &:hover .player-name { color: $accent !important; text-decoration: underline; }
+      &:hover { background: var(--surface-hover) !important; }
+      &.clickable { cursor: pointer; }
+      &.clickable:hover .player-name { color: $accent !important; text-decoration: underline; }
 
       .mat-mdc-cell {
         color: var(--text) !important;

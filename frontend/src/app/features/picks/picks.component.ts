@@ -100,6 +100,11 @@ export class PicksComponent implements OnInit, OnDestroy {
     this.matches.set(matchData);
     this.tiebreakerValue.set(tiebreakerVal);
 
+    if (this.isViewingOther && !this.effectiveLocked()) {
+      this.router.navigate(['/pool', this.poolId, 'leaderboard']);
+      return;
+    }
+
     const pm = new Map<string, Outcome>();
     for (const p of picksData) pm.set(p.match_id, p.pick);
     this.pickMap.set(pm);
