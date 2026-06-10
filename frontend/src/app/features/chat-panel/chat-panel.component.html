@@ -6,7 +6,12 @@
     @if (collapsed()) {
       <mat-icon class="chat-icon-above">chat</mat-icon>
     }
-    <button mat-icon-button class="header-btn collapse-btn" (click)="collapseToggle.emit()"
+    <!-- Mobile: X to close -->
+    <button mat-icon-button class="header-btn mobile-close-btn" (click)="closeMobile.emit()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <!-- Desktop: collapse chevron -->
+    <button mat-icon-button class="header-btn collapse-btn desktop-only" (click)="collapseToggle.emit()"
       [title]="collapsed() ? 'Expand chat' : 'Collapse chat'">
       <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
     </button>
