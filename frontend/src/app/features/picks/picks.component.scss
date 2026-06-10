@@ -72,7 +72,19 @@ body.theme-dark .lock-badge { color: $gold; border-color: rgba(255,215,0,0.3); }
   transition: background-color 0.15s;
 
   &:hover { background: var(--surface-hover); }
-  &.has-result { border-left: 3px solid rgba(255,215,0,0.4); }
+  &.has-result { border-left: 3px solid rgba(255,215,0,0.35); }
+
+  &.pick-correct {
+    border-left: 4px solid #00c853;
+    background: rgba(0, 200, 83, 0.06);
+    &:hover { background: rgba(0, 200, 83, 0.1); }
+  }
+
+  &.pick-wrong {
+    border-left: 4px solid #ef5350;
+    background: rgba(239, 83, 80, 0.06);
+    &:hover { background: rgba(239, 83, 80, 0.1); }
+  }
 }
 
 .match-meta {

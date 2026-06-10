@@ -74,5 +74,14 @@ export interface LeaderboardEntry {
   pending_picks: number;
 }
 
+export interface PoolMessage {
+  id: string;
+  pool_id: string;
+  user_id: string;
+  display_name: string;
+  message: string;
+  created_at: string;
+}
+
 export type Outcome = 'home' | 'draw' | 'away';
 export type Network = 'FOX' | 'FS1' | 'TUBI' | 'FOX/TUBI' | 'TBD';

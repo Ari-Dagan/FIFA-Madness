@@ -50,21 +50,23 @@ $green: #00843d;
 }
 
 .segment.state-correct {
-  background-color: $green;
+  background: linear-gradient(135deg, #00a846, #00c853);
   color: #fff;
-  font-weight: 700;
-  .result-icon { color: #b9f6ca; }
+  font-weight: 800;
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15);
+  .result-icon { color: #ccff90; font-size: 1rem; }
 }
 
 .segment.state-wrong {
-  background-color: #8b0000;
-  color: rgba(255,255,255,0.85);
-  font-weight: 700;
-  .result-icon { color: #ffcdd2; }
+  background: linear-gradient(135deg, #c62828, #ef5350);
+  color: #fff;
+  font-weight: 800;
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15);
+  .result-icon { color: #ffcdd2; font-size: 1rem; }
 }
 
 .segment.state-graded-other {
-  background-color: rgba(0, 132, 61, 0.18);
+  background-color: rgba(0, 168, 70, 0.12);
   color: #2e7d32;
 }
 

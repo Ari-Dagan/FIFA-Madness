@@ -1,0 +1,208 @@
+$accent: #c8102e;
+$chat-width: 260px;
+$chat-collapsed-width: 40px;
+$chat-fullscreen-width: 520px;
+
+:host {
+  display: block;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: $chat-width;
+  z-index: 900;
+  overflow: hidden;
+  transition: width 0.25s ease;
+}
+
+:host.collapsed { width: $chat-collapsed-width; }
+
+:host.fullscreen {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1100;
+}
+
+.chat-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--nav-bg);
+  border-left: 1px solid var(--nav-border);
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px 0 0;
+  border-bottom: 1px solid var(--nav-border);
+  flex-shrink: 0;
+  height: 64px;
+  min-width: $chat-collapsed-width;
+}
+
+:host.collapsed .chat-header {
+  flex-direction: column;
+  justify-content: center;
+  height: auto;
+  padding: 10px 0;
+  gap: 2px;
+}
+
+.chat-icon-above {
+  color: $accent;
+  font-size: 1.3rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  flex-shrink: 0;
+}
+
+.header-btn {
+  flex-shrink: 0;
+  width: 40px !important;
+  height: 40px !important;
+  color: var(--text-2) !important;
+
+  mat-icon { font-size: 1.2rem; width: 1.2rem; height: 1.2rem; }
+  &:hover { color: var(--text) !important; }
+}
+
+.collapse-btn { margin-left: 0; }
+
+
+.header-spacer { flex: 1; }
+
+.chat-icon { color: $accent; font-size: 1.1rem; width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
+
+.chat-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.fs-btn {
+  mat-icon { font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+}
+
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  text-align: center;
+
+  mat-icon { font-size: 2rem; width: 2rem; height: 2rem; opacity: 0.35; }
+  p { margin: 0; line-height: 1.5; }
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 95%;
+
+  &.mine {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    .bubble {
+      background: $accent;
+      color: white;
+      border-radius: 12px 12px 3px 12px;
+    }
+  }
+
+  .sender {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-3);
+    margin-bottom: 2px;
+    padding: 0 4px;
+  }
+
+  &.mine .sender { color: rgba(200, 16, 46, 0.7); }
+
+  .bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 3px;
+    padding: 6px 11px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .timestamp {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6rem;
+    color: var(--text-4);
+    margin-top: 2px;
+    padding: 0 4px;
+  }
+}
+
+.chat-input-area {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--nav-border);
+  flex-shrink: 0;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 7px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  line-height: 1.4;
+  max-height: 90px;
+  overflow-y: auto;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: $accent; }
+  &::placeholder { color: var(--text-4); }
+}
+
+.send-btn {
+  color: $accent !important;
+  flex-shrink: 0;
+  width: 34px !important;
+  height: 34px !important;
+  &:disabled { opacity: 0.35; }
+}
+
+@media (max-width: 900px) {
+  :host { display: none; }
+}

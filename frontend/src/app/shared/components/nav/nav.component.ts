@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
@@ -18,6 +18,21 @@ export class NavComponent {
   isAdmin = input<boolean>(false);
   userDisplayName = input<string>('');
   isDark = input<boolean>(true);
+  mobileOpen = input<boolean>(false);
+
   themeToggle = output<void>();
   signOut = output<void>();
+  collapseChange = output<boolean>();
+  closeMobile = output<void>();
+
+  readonly collapsed = signal(
+    localStorage.getItem('nav-collapsed') === '1'
+  );
+
+  toggleCollapse(): void {
+    const next = !this.collapsed();
+    this.collapsed.set(next);
+    localStorage.setItem('nav-collapsed', next ? '1' : '0');
+    this.collapseChange.emit(next);
+  }
 }

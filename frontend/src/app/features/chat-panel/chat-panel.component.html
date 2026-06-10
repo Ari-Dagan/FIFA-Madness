@@ -1,0 +1,56 @@
+<div class="chat-sidebar">
+  <div class="chat-header">
+    @if (collapsed()) {
+      <mat-icon class="chat-icon-above">chat</mat-icon>
+    }
+    <button mat-icon-button class="header-btn collapse-btn" (click)="collapseToggle.emit()"
+      [title]="collapsed() ? 'Expand chat' : 'Collapse chat'">
+      <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
+
+    @if (!collapsed()) {
+      <div class="header-spacer"></div>
+      <mat-icon class="chat-icon">chat</mat-icon>
+      <span class="chat-title">Pool Chat</span>
+      <button mat-icon-button class="header-btn fs-btn" (click)="fullscreenToggle.emit()"
+        [title]="fullscreen() ? 'Exit fullscreen' : 'Fullscreen'">
+        <mat-icon>{{ fullscreen() ? 'close' : 'fullscreen' }}</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (!collapsed()) {
+    <div class="message-list" #messageList (scroll)="onMessageScroll(messageList)">
+      @if (loading()) {
+        <div class="chat-empty">Loading…</div>
+      } @else if (messages().length === 0) {
+        <div class="chat-empty">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <p>No messages yet.<br>Say hi!</p>
+        </div>
+      } @else {
+        @for (msg of messages(); track msg.id) {
+          <div class="message" [class.mine]="isMine(msg)">
+            <span class="sender">{{ isMine(msg) ? 'You' : msg.display_name }}</span>
+            <div class="bubble">{{ msg.message }}</div>
+            <span class="timestamp">{{ formatTime(msg.created_at) }}</span>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="chat-input-area">
+      <textarea
+        class="chat-input"
+        [(ngModel)]="messageText"
+        (keydown)="onKeyDown($event)"
+        placeholder="Message…"
+        maxlength="500"
+        rows="1"
+      ></textarea>
+      <button mat-icon-button class="send-btn" (click)="send()" [disabled]="sending() || !messageText.trim()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  }
+</div>

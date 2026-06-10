@@ -56,6 +56,14 @@ export class AuthService {
     await this.supabase.client.auth.signOut();
   }
 
+  async updateProfile(userId: string, displayName: string): Promise<void> {
+    const { error } = await this.supabase.client
+      .from('profiles')
+      .update({ display_name: displayName })
+      .eq('id', userId);
+    if (error) throw new Error(error.message);
+  }
+
   async getProfile(userId: string): Promise<Profile | null> {
     const { data, error } = await this.supabase.client
       .from('profiles')

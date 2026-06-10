@@ -1,50 +1,93 @@
-<nav class="sidebar">
+@if (mobileOpen()) {
+  <div class="mobile-backdrop" (click)="closeMobile.emit()"></div>
+}
+
+<nav class="sidebar" [class.collapsed]="collapsed()" [class.mobile-open]="mobileOpen()">
+
   <div class="logo-area">
     <span class="logo-icon">⚽</span>
-    <span class="logo-text">WC 2026 POOL</span>
+    @if (!collapsed()) {
+      <span class="logo-text">WC 2026 POOL</span>
+    }
+    <div class="logo-actions">
+      <button class="collapse-btn desktop-only" (click)="toggleCollapse()"
+        [matTooltip]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'" matTooltipPosition="right">
+        <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      </button>
+      @if (mobileOpen()) {
+        <button class="collapse-btn mobile-only" (click)="closeMobile.emit()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
   </div>
 
   <mat-nav-list class="nav-list">
-    <a mat-list-item [routerLink]="['/']" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+
+    <a mat-list-item [routerLink]="['/']" routerLinkActive="active-link"
+       [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobile.emit()"
+       [matTooltip]="collapsed() ? 'Home' : ''" matTooltipPosition="right">
       <mat-icon matListItemIcon>public</mat-icon>
-      <span matListItemTitle>Home</span>
+      @if (!collapsed()) { <span matListItemTitle>Home</span> }
     </a>
 
     @if (poolId()) {
-      <a mat-list-item [routerLink]="['/pool', poolId(), 'picks']" routerLinkActive="active-link">
+      <a mat-list-item [routerLink]="['/pool', poolId(), 'picks']" routerLinkActive="active-link"
+         (click)="closeMobile.emit()"
+         [matTooltip]="collapsed() ? 'My Picks' : ''" matTooltipPosition="right">
         <mat-icon matListItemIcon>sports_soccer</mat-icon>
-        <span matListItemTitle>My Picks</span>
+        @if (!collapsed()) { <span matListItemTitle>My Picks</span> }
       </a>
 
-      <a mat-list-item [routerLink]="['/pool', poolId(), 'leaderboard']" routerLinkActive="active-link">
+      <a mat-list-item [routerLink]="['/pool', poolId(), 'leaderboard']" routerLinkActive="active-link"
+         (click)="closeMobile.emit()"
+         [matTooltip]="collapsed() ? 'Leaderboard' : ''" matTooltipPosition="right">
         <mat-icon matListItemIcon>leaderboard</mat-icon>
-        <span matListItemTitle>Leaderboard</span>
+        @if (!collapsed()) { <span matListItemTitle>Leaderboard</span> }
       </a>
 
-      <a mat-list-item [routerLink]="['/pool', poolId(), 'scores']" routerLinkActive="active-link">
+      <a mat-list-item [routerLink]="['/pool', poolId(), 'scores']" routerLinkActive="active-link"
+         (click)="closeMobile.emit()"
+         [matTooltip]="collapsed() ? 'Scores' : ''" matTooltipPosition="right">
         <mat-icon matListItemIcon>scoreboard</mat-icon>
-        <span matListItemTitle>Scores</span>
+        @if (!collapsed()) { <span matListItemTitle>Scores</span> }
       </a>
 
       @if (isAdmin()) {
-        <a mat-list-item [routerLink]="['/admin/results', poolId()]" routerLinkActive="active-link">
+        <a mat-list-item [routerLink]="['/admin/results', poolId()]" routerLinkActive="active-link"
+           (click)="closeMobile.emit()"
+           [matTooltip]="collapsed() ? 'Enter Results' : ''" matTooltipPosition="right">
           <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
-          <span matListItemTitle>Admin Results</span>
+          @if (!collapsed()) { <span matListItemTitle>Enter Results</span> }
         </a>
       }
+
     }
+
   </mat-nav-list>
 
   <div class="spacer"></div>
 
   <div class="user-section">
-    <div class="user-info">
+    <a class="user-info" [routerLink]="['/profile']" (click)="closeMobile.emit()"
+       [matTooltip]="collapsed() ? (userDisplayName() || 'Profile') : 'Edit profile'" matTooltipPosition="right">
       <mat-icon class="user-icon">account_circle</mat-icon>
-      <span class="user-name">{{ userDisplayName() || 'Guest' }}</span>
-    </div>
-    <button mat-stroked-button class="sign-out-btn" (click)="signOut.emit()">
-      <mat-icon>logout</mat-icon> Sign Out
-    </button>
+      @if (!collapsed()) {
+        <span class="user-name">{{ userDisplayName() || 'Guest' }}</span>
+        <mat-icon class="edit-icon">edit</mat-icon>
+      }
+    </a>
+
+    @if (!collapsed()) {
+      <button mat-stroked-button class="sign-out-btn" (click)="signOut.emit()">
+        <mat-icon>logout</mat-icon> Sign Out
+      </button>
+    } @else {
+      <button mat-icon-button class="sign-out-icon-btn" (click)="signOut.emit()"
+        matTooltip="Sign Out" matTooltipPosition="right">
+        <mat-icon>logout</mat-icon>
+      </button>
+    }
   </div>
 
   <div class="theme-toggle-area">
@@ -52,6 +95,9 @@
       [matTooltip]="isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'" matTooltipPosition="right">
       <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
     </button>
-    <span class="theme-label">{{ isDark() ? 'Light Mode' : 'Dark Mode' }}</span>
+    @if (!collapsed()) {
+      <span class="theme-label">{{ isDark() ? 'Light Mode' : 'Dark Mode' }}</span>
+    }
   </div>
+
 </nav>

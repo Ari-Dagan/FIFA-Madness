@@ -100,6 +100,17 @@ $live: #ff4757;
   &.outcome-draw { background: rgba(160,125,0,0.15); color: #a07800; }
 }
 
+.pick-indicator {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+  line-height: 1;
+  flex-shrink: 0;
+
+  &.pick-correct { color: #00c853; }
+  &.pick-wrong   { color: #ef5350; }
+}
+
 body.theme-dark {
   .outcome-badge {
     &.outcome-home { background: rgba(0,132,61,0.25); color: #81c784; }

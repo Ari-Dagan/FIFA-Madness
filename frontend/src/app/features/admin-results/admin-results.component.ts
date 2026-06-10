@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../core/services/auth.service';
 import { PoolService } from '../../core/services/pool.service';
 import { MatchService } from '../../core/services/match.service';
@@ -31,7 +32,7 @@ interface MatchRow {
 @Component({
   selector: 'app-admin-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTableModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatSnackBarModule, MatChipsModule, NetworkBadgeComponent],
+  imports: [CommonModule, FormsModule, MatTableModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatSnackBarModule, MatChipsModule, MatTooltipModule, NetworkBadgeComponent],
   templateUrl: './admin-results.component.html',
   styleUrl: './admin-results.component.scss',
 })
@@ -46,8 +47,10 @@ export class AdminResultsComponent implements OnInit {
 
   readonly poolId = this.route.snapshot.paramMap.get('poolId')!;
   readonly loading = signal(true);
+  readonly isLocked = signal(false);
+  readonly locking = signal(false);
   readonly rows = signal<MatchRow[]>([]);
-  readonly displayedColumns = ['match', 'teams', 'home_score', 'away_score', 'outcome', 'source', 'action'];
+  readonly displayedColumns = ['match', 'teams', 'home_score', 'away_score', 'outcome', 'source', 'action', 'undo'];
 
   async ngOnInit(): Promise<void> {
     const user = this.auth.currentUser();
@@ -56,6 +59,8 @@ export class AdminResultsComponent implements OnInit {
       await this.router.navigate(['/pool', this.poolId]);
       return;
     }
+
+    this.isLocked.set(pool.is_locked);
 
     const [matches, results] = await Promise.all([
       this.matchService.getMatches(),
@@ -78,6 +83,20 @@ export class AdminResultsComponent implements OnInit {
 
     this.rows.set(rows);
     this.loading.set(false);
+  }
+
+  async lockPool(): Promise<void> {
+    if (!confirm('Lock the pool? Players will no longer be able to change their picks.')) return;
+    this.locking.set(true);
+    try {
+      await this.poolService.lockPool(this.poolId);
+      this.isLocked.set(true);
+      this.snackBar.open('Pool locked — picks are now frozen.', '', { duration: 3000, panelClass: 'snack-success' });
+    } catch {
+      this.snackBar.open('Error locking pool', 'Dismiss', { duration: 4000 });
+    } finally {
+      this.locking.set(false);
+    }
   }
 
   readonly getFlagUrl = getFlagUrl;
@@ -122,6 +141,28 @@ export class AdminResultsComponent implements OnInit {
       this.snackBar.open(`✓ Result saved: ${row.match.home_team} ${row.homeScore}–${row.awayScore} ${row.match.away_team}`, '', { duration: 3000, panelClass: 'snack-success' });
     } catch {
       this.snackBar.open('Error saving result', 'Dismiss', { duration: 4000 });
+    } finally {
+      row.saving = false;
+      this.rows.set([...this.rows()]);
+    }
+  }
+
+  async resetRow(row: MatchRow): Promise<void> {
+    if (!confirm(`Reset result for match #${row.match.match_number}? This will clear scores and un-grade all picks for this match.`)) return;
+
+    row.saving = true;
+    this.rows.set([...this.rows()]);
+
+    try {
+      await this.resultsService.deleteResult(row.match.id);
+      row.homeScore = null;
+      row.awayScore = null;
+      row.existingResult = null;
+      row.isAutoSynced = false;
+      row.saved = false;
+      this.snackBar.open(`↩ Result reset for match #${row.match.match_number}`, '', { duration: 3000 });
+    } catch {
+      this.snackBar.open('Error resetting result', 'Dismiss', { duration: 4000 });
     } finally {
       row.saving = false;
       this.rows.set([...this.rows()]);

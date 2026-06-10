@@ -15,7 +15,7 @@ export const adminGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) =
   if (!poolId) return router.createUrlTree(['/']);
 
   const isAdmin = await poolService.isAdmin(poolId, user.id);
-  if (!isAdmin) return router.createUrlTree(['/']);
+  if (!isAdmin) return router.createUrlTree(['/pool', poolId, 'scores']);
 
   return true;
 };

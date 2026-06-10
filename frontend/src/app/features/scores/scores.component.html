@@ -44,6 +44,11 @@
                     <span class="outcome-badge" [class]="'outcome-' + match.result!.outcome">
                       {{ outcomeLabel(match.result!.outcome) }}
                     </span>
+                    @if (pickState(match.id, match.result!.outcome); as ps) {
+                      <span class="pick-indicator" [class]="'pick-' + ps">
+                        {{ ps === 'correct' ? '✓' : '✗' }}
+                      </span>
+                    }
                   } @else {
                     <span class="upcoming-badge">UPCOMING</span>
                   }

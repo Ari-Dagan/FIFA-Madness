@@ -1,0 +1,108 @@
+$accent: #c8102e;
+
+.profile-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 24px;
+  background-color: var(--bg);
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+
+  .header-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+    color: $accent;
+  }
+
+  .title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin: 0;
+  }
+}
+
+.loading-center {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.field-group {
+  margin-bottom: 24px;
+}
+
+.field-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+
+.field-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-2);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.name-field {
+  width: 100%;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+}
+
+.field-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--text-4);
+  margin: 6px 0 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.save-btn {
+  background: $accent !important;
+  color: white !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-spinner { display: inline-block; }
+}
+
+@media (max-width: 600px) {
+  .profile-card { padding: 28px 20px; }
+  .actions { flex-direction: column; }
+  .save-btn { width: 100%; justify-content: center; }
+}

@@ -148,6 +148,13 @@ export class PicksComponent implements OnInit, OnDestroy {
     return this.pickMap().get(matchId) ?? null;
   }
 
+  getPickState(matchId: string): 'correct' | 'wrong' | null {
+    const result = this.results().get(matchId);
+    const pick = this.pickMap().get(matchId);
+    if (!result?.outcome || !pick) return null;
+    return pick === result.outcome ? 'correct' : 'wrong';
+  }
+
   readonly getFlagUrl = getFlagUrl;
   readonly teamDisplayName = teamDisplayName;
 

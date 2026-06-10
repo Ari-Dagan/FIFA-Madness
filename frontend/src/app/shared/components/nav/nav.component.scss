@@ -1,12 +1,22 @@
 $accent: #c8102e;
 $gold: #ffd700;
+$nav-width: 240px;
+$nav-collapsed-width: 72px;
 
 :host { display: block; height: 100%; }
+
+.mobile-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1099;
+}
 
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 240px;
+  width: $nav-width;
   height: 100vh;
   position: fixed;
   left: 0;
@@ -14,32 +24,106 @@ $gold: #ffd700;
   background-color: var(--nav-bg);
   color: var(--text);
   overflow-y: auto;
-  z-index: 1000;
+  overflow-x: hidden;
+  z-index: 1100;
   box-shadow: var(--nav-shadow);
   border-right: 1px solid var(--nav-border);
-  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition: width 0.25s ease, transform 0.3s ease, background-color 0.2s, border-color 0.2s;
 }
 
+// ── Collapsed (desktop) ──────────────────────────────────────────
+.sidebar.collapsed {
+  width: $nav-collapsed-width;
+  overflow: hidden;
+}
+
+// ── Mobile ───────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .mobile-backdrop { display: block; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    width: $nav-width !important; // always full-width on mobile, never collapse
+    box-shadow: 4px 0 24px rgba(0,0,0,0.25);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .desktop-only { display: none !important; }
+}
+
+@media (min-width: 769px) {
+  .mobile-backdrop { display: none !important; }
+  .mobile-only { display: none !important; }
+}
+
+// ── Logo ─────────────────────────────────────────────────────────
 .logo-area {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 24px 20px 20px;
+  padding: 20px 16px;
   border-bottom: 1px solid var(--nav-border);
+  flex-shrink: 0;
+  min-height: 64px;
 
-  .logo-icon { font-size: 1.8rem; line-height: 1; }
+  .logo-icon { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
   .logo-text {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     letter-spacing: 2px;
     color: $gold;
     line-height: 1;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .logo-actions {
+    margin-left: auto;
+    flex-shrink: 0;
   }
 }
 
+// When collapsed, center just the toggle button in the logo area
+.sidebar.collapsed .logo-area {
+  padding: 16px 0;
+  justify-content: center;
+  gap: 0;
+
+  .logo-icon { display: none; }
+  .logo-actions { margin-left: 0; }
+}
+
+.collapse-btn {
+  background: rgba(200, 16, 46, 0.12);
+  border: 1px solid rgba(200, 16, 46, 0.3);
+  cursor: pointer;
+  color: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  padding: 0;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: rgba(200, 16, 46, 0.22);
+    border-color: rgba(200, 16, 46, 0.55);
+  }
+
+  mat-icon { font-size: 1.25rem; width: 1.25rem; height: 1.25rem; }
+}
+
+// ── Nav list ─────────────────────────────────────────────────────
 .nav-list {
   padding: 12px 0;
   background: transparent !important;
+  flex-shrink: 0;
 
   ::ng-deep .mat-mdc-list-item {
     color: var(--nav-text) !important;
@@ -47,7 +131,7 @@ $gold: #ffd700;
     margin-right: 12px;
     margin-bottom: 4px;
     height: 48px !important;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.15s, color 0.15s;
 
     &:hover {
       background-color: var(--surface-hover) !important;
@@ -60,6 +144,7 @@ $gold: #ffd700;
       font-family: 'Inter', sans-serif;
       font-size: 0.9rem;
       font-weight: 500;
+      white-space: nowrap;
     }
   }
 
@@ -67,35 +152,58 @@ $gold: #ffd700;
     background-color: rgba(200,16,46,0.15) !important;
     color: var(--text) !important;
     border-left: 3px solid $accent;
-
     .mat-icon { color: $accent !important; }
   }
 }
 
+.chat-btn {
+  width: calc(100% - 12px);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+// Collapsed state: centre the icons
+.sidebar.collapsed .nav-list ::ng-deep .mat-mdc-list-item {
+  margin-right: 0;
+  border-radius: 0;
+  justify-content: center;
+}
+
 .spacer { flex: 1; }
 
+// ── User section ─────────────────────────────────────────────────
 .user-section {
-  padding: 16px;
+  padding: 12px 16px;
   border-top: 1px solid var(--nav-border);
+  flex-shrink: 0;
 
   .user-info {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
-    padding: 0 4px;
+    margin-bottom: 10px;
+    padding: 6px 4px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-2);
+    transition: background-color 0.15s;
+    cursor: pointer;
 
-    .user-icon { color: var(--nav-icon); font-size: 1.4rem; width: 1.4rem; height: 1.4rem; }
+    &:hover { background: var(--surface-hover); }
+
+    .user-icon { color: var(--nav-icon); font-size: 1.4rem; width: 1.4rem; height: 1.4rem; flex-shrink: 0; }
     .user-name {
       font-family: 'Inter', sans-serif;
       font-size: 0.85rem;
       font-weight: 500;
-      color: var(--text-2);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 160px;
+      flex: 1;
     }
+    .edit-icon { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; color: var(--text-4); flex-shrink: 0; }
   }
 
   .sign-out-btn {
@@ -112,13 +220,21 @@ $gold: #ffd700;
       color: var(--text) !important;
     }
   }
+
+  .sign-out-icon-btn {
+    width: 100%;
+    color: var(--nav-icon) !important;
+    &:hover { color: $accent !important; }
+  }
 }
 
+// ── Theme toggle ─────────────────────────────────────────────────
 .theme-toggle-area {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 16px 20px;
+  padding: 10px 16px 20px;
+  flex-shrink: 0;
 
   .theme-toggle-btn {
     color: var(--theme-btn-color) !important;
@@ -126,13 +242,13 @@ $gold: #ffd700;
     border: 1px solid var(--theme-btn-border);
     border-radius: 50%;
     transition: background-color 0.2s, transform 0.2s;
+    flex-shrink: 0;
 
     &:hover {
-      background-color: var(--theme-btn-bg) !important;
       filter: brightness(1.2);
       transform: rotate(20deg);
     }
   }
 
-  .theme-label { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--theme-label); }
+  .theme-label { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--theme-label); white-space: nowrap; }
 }

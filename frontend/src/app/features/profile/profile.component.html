@@ -1,0 +1,38 @@
+<div class="profile-page">
+  <div class="profile-card">
+    <div class="card-header">
+      <mat-icon class="header-icon">account_circle</mat-icon>
+      <h1 class="title">My Profile</h1>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+    } @else {
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <div class="field-value">{{ email() }}</div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Display Name</label>
+        <mat-form-field appearance="outline" class="name-field">
+          <input matInput
+            [ngModel]="displayName()"
+            (ngModelChange)="displayName.set($event)"
+            placeholder="Your name"
+            maxlength="40"
+            (keyup.enter)="save()" />
+        </mat-form-field>
+        <p class="field-hint">This is the name other players see on the leaderboard.</p>
+      </div>
+
+      <div class="actions">
+        <button mat-raised-button class="save-btn" (click)="save()" [disabled]="saving() || !displayName().trim()">
+          @if (saving()) { <mat-spinner diameter="18"></mat-spinner> }
+          @else { <mat-icon>save</mat-icon> }
+          Save Changes
+        </button>
+      </div>
+    }
+  </div>
+</div>

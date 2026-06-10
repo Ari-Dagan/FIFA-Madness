@@ -32,6 +32,28 @@ $auto-color: #0288d1;
   .sub { font-family: 'Inter', sans-serif; color: var(--text-2); font-size: 0.875rem; margin: 0; }
 }
 
+.page-header-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+
+.lock-pool-btn {
+  background-color: $accent !important; color: #fff !important;
+  font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.5px;
+  display: flex; align-items: center; gap: 6px;
+  mat-icon { font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+  mat-spinner { margin-right: 4px; ::ng-deep circle { stroke: #fff !important; } }
+}
+
+.locked-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,215,0,0.12); border: 1px solid rgba(160,120,0,0.3);
+  border-radius: 8px; padding: 8px 16px;
+  font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 700; color: #a07800;
+  mat-icon { font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+}
+
+body.theme-dark .locked-badge { color: $gold; border-color: rgba(255,215,0,0.3); }
+
 .loading-center { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
 
 .table-wrapper {
@@ -118,6 +140,18 @@ body.theme-dark .source-badge.manual { color: #a5d6a7; }
 body.theme-dark {
   .save-row-btn.saved { color: #81c784 !important; }
   .save-row-btn.existing { color: $gold !important; }
+}
+
+.reset-btn {
+  color: var(--text-3) !important;
+  transition: color 0.15s;
+  &:hover:not(:disabled) { color: #c62828 !important; }
+  &:disabled { opacity: 0.3; }
+}
+
+@media (max-width: 768px) {
+  .admin-page { padding: 16px; }
+  .results-table { min-width: 600px; }
 }
 
 ::ng-deep .snack-success .mdc-snackbar__surface { background: #00843d !important; }

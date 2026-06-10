@@ -46,4 +46,10 @@ export class ResultsService {
 
     if (gradeError) throw new Error(gradeError.message);
   }
+
+  async deleteResult(matchId: string): Promise<void> {
+    const { error } = await this.supabase.client
+      .rpc('reset_match_result', { p_match_id: matchId });
+    if (error) throw new Error(error.message);
+  }
 }

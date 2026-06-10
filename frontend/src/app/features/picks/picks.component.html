@@ -67,7 +67,10 @@
 
           <div class="matches-list">
             @for (match of group.matches; track match.id) {
-              <div class="match-row" [class.has-result]="getResult(match.id)">
+              <div class="match-row"
+                [class.has-result]="getResult(match.id)"
+                [class.pick-correct]="getPickState(match.id) === 'correct'"
+                [class.pick-wrong]="getPickState(match.id) === 'wrong'">
                 <div class="match-meta">
                   <span class="match-num">#{{ match.match_number }}</span>
                   <span class="match-date">{{ formatMatchDate(match.kickoff_utc) }}</span>
