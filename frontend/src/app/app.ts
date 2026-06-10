@@ -34,7 +34,7 @@ import { ChatPanelComponent } from './features/chat-panel/chat-panel.component';
 
       <!-- Mobile chat button -->
       @if (currentPoolId()) {
-        <button class="chat-mobile-btn" (click)="chatMobileOpen.set(true)" aria-label="Open chat">
+        <button class="chat-mobile-btn" (click)="router.navigate(['/pool', currentPoolId(), 'chat'])" aria-label="Open chat">
           <mat-icon>chat</mat-icon>
         </button>
       }
@@ -142,7 +142,7 @@ import { ChatPanelComponent } from './features/chat-panel/chat-panel.component';
 export class App implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly poolService = inject(PoolService);
-  private readonly router = inject(Router);
+  readonly router = inject(Router);
 
   readonly isDark = signal(true);
   readonly currentPoolId = signal<string | null>(null);
@@ -189,9 +189,13 @@ export class App implements OnInit {
       this.mobileNavOpen.set(false);
       this.chatMobileOpen.set(false);
 
+      const isChatPage = url.match(/\/pool\/[^/]+\/chat/);
+
       const poolMatch = url.match(/\/pool\/([^/]+)/);
       const adminMatch = url.match(/\/admin\/results\/([^/]+)/);
       const poolId = poolMatch?.[1] ?? adminMatch?.[1] ?? null;
+
+      if (isChatPage) { this.showNav.set(false); }
       this.currentPoolId.set(poolId);
 
       if (poolId) {

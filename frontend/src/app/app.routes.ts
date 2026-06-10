@@ -51,6 +51,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin-results/admin-results.component').then(m => m.AdminResultsComponent),
   },
   {
+    path: 'pool/:poolId/chat',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/chat-page/chat-page.component').then(m => m.ChatPageComponent),
+  },
+  {
     path: 'profile',
     canActivate: [authGuard],
     loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent),

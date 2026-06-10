@@ -193,6 +193,8 @@ $chat-fullscreen-width: 520px;
 
   &:focus { border-color: $accent; }
   &::placeholder { color: var(--text-4); }
+
+  @media (max-width: 900px) { font-size: 16px; }
 }
 
 .send-btn {
