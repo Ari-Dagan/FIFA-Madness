@@ -76,6 +76,48 @@
       </div>
     }
 
+    <!-- Mobile card list -->
+    <div class="mobile-list">
+      @for (e of entries(); track e.user_id) {
+        <div class="mobile-row"
+          [class.top-1]="e.rank === 1"
+          [class.top-2]="e.rank === 2"
+          [class.top-3]="e.rank === 3"
+          [class.my-row]="e.user_id === currentUser()?.id"
+          [class.eliminated-row]="!e.still_alive"
+          [class.clickable]="effectiveLocked() || e.user_id === currentUser()?.id"
+          [matTooltip]="!effectiveLocked() && e.user_id !== currentUser()?.id ? 'Brackets hidden until pool locks' : ''"
+          (click)="viewBracket(e)">
+          <div class="mob-rank">{{ rankMedal(e.rank) }}</div>
+          <div class="mob-main">
+            <div class="mob-name">
+              {{ e.display_name }}
+              @if (e.user_id === currentUser()?.id) {
+                <span class="you-badge">YOU</span>
+              }
+            </div>
+            <div class="mob-sub">{{ e.total_picks }}/72 picks</div>
+          </div>
+          <div class="mob-correct-col">
+            <span class="mob-correct">{{ e.correct_picks }}</span>
+            <span class="mob-correct-label">correct</span>
+          </div>
+          <div class="mob-right">
+            @if (e.points_behind_leader > 0) {
+              <span class="behind-num">-{{ e.points_behind_leader }}</span>
+            } @else {
+              <span class="behind-zero">—</span>
+            }
+            @if (e.still_alive) {
+              <span class="alive-yes">✓</span>
+            } @else {
+              <span class="alive-no">✗</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
     <!-- Main table -->
     <div class="table-container">
       <table mat-table [dataSource]="entries()" class="leaderboard-table">
