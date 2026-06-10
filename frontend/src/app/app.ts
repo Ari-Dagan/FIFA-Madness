@@ -32,6 +32,13 @@ import { ChatPanelComponent } from './features/chat-panel/chat-panel.component';
         <mat-icon>menu</mat-icon>
       </button>
 
+      <!-- Mobile chat button -->
+      @if (currentPoolId()) {
+        <button class="chat-mobile-btn" (click)="chatMobileOpen.set(true)" aria-label="Open chat">
+          <mat-icon>chat</mat-icon>
+        </button>
+      }
+
       <main class="main-content" [style.margin-left]="contentMargin()" [style.margin-right]="contentMarginRight()">
         <router-outlet></router-outlet>
       </main>
@@ -51,8 +58,10 @@ import { ChatPanelComponent } from './features/chat-panel/chat-panel.component';
         [displayName]="displayName()"
         [collapsed]="chatCollapsed()"
         [fullscreen]="chatFullscreen()"
+        [mobileOpen]="chatMobileOpen()"
         (collapseToggle)="chatCollapsed.set(!chatCollapsed())"
         (fullscreenToggle)="chatFullscreen.set(!chatFullscreen())"
+        (closeMobile)="chatMobileOpen.set(false)"
       ></app-chat-panel>
     }
   `,
@@ -85,9 +94,31 @@ import { ChatPanelComponent } from './features/chat-panel/chat-panel.component';
     .hamburger-btn:hover { background: var(--surface-hover); }
     .hamburger-btn mat-icon { display: block; }
 
+    .chat-mobile-btn {
+      display: none;
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 1050;
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 6px;
+      color: var(--text);
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: background 0.15s;
+    }
+    .chat-mobile-btn:hover { background: var(--surface-hover); }
+    .chat-mobile-btn mat-icon { display: block; }
+
     @media (max-width: 768px) {
       .hamburger-btn { display: flex; }
+      .chat-mobile-btn { display: flex; }
       .main-content { margin-left: 0 !important; margin-right: 0 !important; padding-top: 52px; }
+      .join-code-badge { display: none; }
     }
 
     .join-code-badge {
@@ -123,6 +154,7 @@ export class App implements OnInit {
   readonly mobileNavOpen = signal(false);
   readonly chatCollapsed = signal(false);
   readonly chatFullscreen = signal(false);
+  readonly chatMobileOpen = signal(false);
 
   readonly contentMargin = computed(() => this.sidebarCollapsed() ? '72px' : '240px');
   readonly contentMarginRight = computed(() => {
@@ -154,7 +186,8 @@ export class App implements OnInit {
       const isAuthPage = url.startsWith('/auth/');
       const user = this.auth.currentUser();
       this.showNav.set(!isAuthPage && !!user);
-      this.mobileNavOpen.set(false); // close mobile nav on route change
+      this.mobileNavOpen.set(false);
+      this.chatMobileOpen.set(false);
 
       const poolMatch = url.match(/\/pool\/([^/]+)/);
       const adminMatch = url.match(/\/admin\/results\/([^/]+)/);

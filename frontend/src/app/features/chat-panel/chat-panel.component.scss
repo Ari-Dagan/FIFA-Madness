@@ -204,5 +204,26 @@ $chat-fullscreen-width: 520px;
 }
 
 @media (max-width: 900px) {
-  :host { display: none; }
+  :host {
+    width: 300px !important;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  :host.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+.mobile-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 899;
+  }
 }

@@ -1,3 +1,6 @@
+@if (mobileOpen()) {
+  <div class="mobile-backdrop" (click)="closeMobile.emit()"></div>
+}
 <div class="chat-sidebar">
   <div class="chat-header">
     @if (collapsed()) {

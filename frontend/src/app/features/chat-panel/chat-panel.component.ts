@@ -18,6 +18,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
   host: {
     '[class.collapsed]': 'collapsed()',
     '[class.fullscreen]': 'fullscreen()',
+    '[class.mobile-open]': 'mobileOpen()',
   },
 })
 export class ChatPanelComponent implements OnInit, OnDestroy, AfterViewChecked {
@@ -33,8 +34,10 @@ export class ChatPanelComponent implements OnInit, OnDestroy, AfterViewChecked {
   displayName = input<string>('');
   collapsed = input<boolean>(false);
   fullscreen = input<boolean>(false);
+  mobileOpen = input<boolean>(false);
   collapseToggle = output<void>();
   fullscreenToggle = output<void>();
+  closeMobile = output<void>();
 
   @ViewChild('messageList') messageList?: ElementRef<HTMLDivElement>;
 
